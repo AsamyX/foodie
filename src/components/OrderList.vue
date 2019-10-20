@@ -5,7 +5,6 @@ table
     td Price
     td Quantity
   tbody
-    template(v-if="!order.order_items[0]") No items
     OrderItem(
       v-for="item in order.order_items"
       :item="item"
