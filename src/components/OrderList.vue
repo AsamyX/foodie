@@ -1,21 +1,32 @@
 <template lang="pug">
-  div
-    ul
-      li(v-for="item in order.order_items")
-        p {{item.name}} : {{item.quantity}}
-        button(@click="increaseQuantity(item.id)") +
-        button(@click="decreaseQuantity(item.id)") -
+table
+  thead
+    td Order Items
+    td Price
+    td Quantity
+  tbody
+    template(v-if="!order.order_items[0]") No items
+    OrderItem(
+      v-for="item in order.order_items"
+      :item="item"
+      :key="item.id"
+      @increaseQuantity="increaseQuantity"
+      @decreaseQuantity="decreaseQuantity"
+      )
 
 </template>
 
 <script>
+import OrderItem from '@/components/OrderItem';
 export default {
   name: 'OrderList',
 
   async mounted() {
     try {
-      // Fetching order based on written ID in browser URL, falling back to 122 order ID
-      // Will upgrade to use vue-router for real project
+      /*
+      Fetching order 122 by default.
+      To test another order, enter the order ID in browser url as the first URL param. Ex: localhost:8080/272
+      */
       const orderId = (location.pathname+location.search).substr(1) ? (location.pathname+location.search).substr(1) : '122';
 
       const response = await fetch(`/api/orders/${orderId}`);
@@ -27,9 +38,13 @@ export default {
     }
   },
 
+  components: {
+    OrderItem
+  },
+
   data() {
     return {
-      order: {},
+      order: {}
     }
   },
 
