@@ -1,34 +1,28 @@
 <template lang="pug">
   #app.app
+    NavBar
     h1.app__title Papa John's, by Islam Gad
     OrderList
 </template>
 
 <script>
 import OrderList from '@/components/OrderList'
+import NavBar from '@/components/NavBar'
 
 export default {
   name: 'app',
   components: {
-    OrderList
+    OrderList,
+    NavBar
   }
 }
 </script>
 
 <style lang="scss">
-$primary: #525F6E;
-$accent: #74C0E2;
-
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
 .app {
+  background: $gray--lighter;
+  height: 100vh;
+
   &__title {
     color: $primary;
   }
