@@ -1,8 +1,12 @@
 <template lang="pug">
   #app.app
     NavBar
-    h1.app__title Papa John's, by Islam Gad
-    OrderList
+    main
+      .container
+        .app__order
+          h2.app__title Papa John's, by Islam Gad
+          hr.app__divider
+          OrderList
 </template>
 
 <script>
@@ -25,6 +29,15 @@ export default {
 
   &__title {
     color: $primary;
+  }
+
+  &__order {
+    padding-top: 40px;
+  }
+
+  &__divider {
+    margin: 12px 0 24px;
+    color: $gray;
   }
 }
 </style>

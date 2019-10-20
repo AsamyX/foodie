@@ -1,9 +1,13 @@
 <template lang="pug">
-table
+table.order
   thead
-    td Order Items
-    td Price
-    td Quantity
+    tr.order__head
+      td
+        h3 Order Items
+      td
+        h3 Price
+      td
+        h3 Quantity
   tbody
     OrderItem(
       v-for="item in order.order_items"
@@ -84,6 +88,18 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.order {
+  border-collapse: collapse; 
+  background: white;
+  width: 100%;
+  color: $primary;
 
+  &__head {
+    td {
+      padding: 12px;
+      border-bottom: 1px solid $gray;
+    }
+  }
+}
 </style>

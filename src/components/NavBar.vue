@@ -18,7 +18,7 @@ export default {
 <style lang="scss" scoped>
 .header {
   padding: 20px;
-  background-color: $primary;
+  background-color: $gray;
   color: $accent;
 
   &__wrapper {
