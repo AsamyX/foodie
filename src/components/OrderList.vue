@@ -8,10 +8,16 @@ table.order
         h3 Price
       td
         h3 Quantity
+      td.hide-mobile.hide-mobile--cell
+        h3 Total
   tbody
+    tr
+      strong.order__fetching(v-if="fetching") Fetching order details...
+    
     OrderItem(
       v-for="item in order.order_items"
       :item="item"
+      :disableInputs="processing"
       :key="item.id"
       @increaseQuantity="increaseQuantity"
       @decreaseQuantity="decreaseQuantity"
@@ -32,12 +38,16 @@ export default {
       */
       const orderId = (location.pathname+location.search).substr(1) ? (location.pathname+location.search).substr(1) : '122';
 
+      this.fetching = true;
+
       const response = await fetch(`/api/orders/${orderId}`);
       const data = await response.json();
       this.order = data;
 
     } catch (err) {
       alert(err);
+    } finally {
+      this.fetching = false;
     }
   },
 
@@ -47,31 +57,40 @@ export default {
 
   data() {
     return {
-      order: {}
+      order: {},
+      processing: false,
+      fetching: false
     }
   },
 
   methods: {
     async increaseQuantity(itemId) {
       try {
+        this.processing = true;
+
         await fetch(`/api/orders/${this.order.id}/items/${itemId}?user_id=2`, {
           method: 'POST'
         });
-        this.refetchOrder();
+        await this.refetchOrder();
 
       } catch(err) {
         alert(err)
+      } finally {
+        this.processing = false;
       }
     },
     async decreaseQuantity(itemId) {
+      this.processing = true;
       try {
         await fetch(`/api/orders/${this.order.id}/items/${itemId}?user_id=2`, {
           method: 'DELETE'
         });
-        this.refetchOrder();
+        await this.refetchOrder();
 
       } catch(err) {
         alert(err);
+      } finally {
+        this.processing = false;
       }
     },
     async refetchOrder() {
@@ -100,6 +119,12 @@ export default {
       padding: 12px;
       border-bottom: 1px solid $gray;
     }
+  }
+
+  &__fetching {
+    padding: 30px 12px;
+    width: 100%;
+    display: block;
   }
 }
 </style>
