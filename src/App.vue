@@ -1,13 +1,16 @@
 <template lang="pug">
   #app.app
-    h1.app__title Foodie App
+    h1.app__title Papa John's, by Islam Gad
+    OrderList
 </template>
 
 <script>
+import OrderList from '@/components/OrderList'
 
 export default {
   name: 'app',
   components: {
+    OrderList
   }
 }
 </script>
