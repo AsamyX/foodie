@@ -14,5 +14,8 @@ module.exports = {
         changeOrigin: true
       },
     }
+  },
+  chainWebpack: config => {
+    config.module.rules.delete('eslint');
   }
 }

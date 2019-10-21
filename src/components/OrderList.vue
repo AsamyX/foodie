@@ -1,5 +1,6 @@
 <template lang="pug">
 table.order
+  .order__loader(:class="{'order__loader--active': processing || fetching}")
   thead
     tr.order__head
       td
@@ -12,8 +13,9 @@ table.order
         h3 Total
   tbody
     tr
-      strong.order__fetching(v-if="fetching") Fetching order details...
-    
+      strong.order__feedback.order__feedback--fetching(v-if="fetching") Fetching order details...
+      p.order__feedback.order__feedback--error(v-else-if="!order.id") Order not found.
+
     OrderItem(
       v-for="item in order.order_items"
       :item="item"
@@ -41,11 +43,13 @@ export default {
       this.fetching = true;
 
       const response = await fetch(`/api/orders/${orderId}`);
+      if(!response.ok) throw new Error(response.statusText || 'Network request failed');
+
       const data = await response.json();
       this.order = data;
 
-    } catch (err) {
-      alert(err);
+    } catch (e) {
+      this.$toasted.error(e);
     } finally {
       this.fetching = false;
     }
@@ -73,8 +77,8 @@ export default {
         });
         await this.refetchOrder();
 
-      } catch(err) {
-        alert(err)
+      } catch(e) {
+        this.$toasted.error(e)
       } finally {
         this.processing = false;
       }
@@ -87,8 +91,8 @@ export default {
         });
         await this.refetchOrder();
 
-      } catch(err) {
-        alert(err);
+      } catch(e) {
+        this.$toasted.error(e);
       } finally {
         this.processing = false;
       }
@@ -96,11 +100,10 @@ export default {
     async refetchOrder() {
       try {
         const response = await fetch(`/api/orders/${this.order.id}`);
-        const data = await response.json();
-        this.order = data;
+        this.order = await response.json();
 
-      } catch(err) {
-        alert(err);
+      } catch(e) {
+        this.$toasted.error(e);
       }
     }
   }
@@ -113,6 +116,7 @@ export default {
   background: white;
   width: 100%;
   color: $primary;
+  position: relative;
 
   &__head {
     td {
@@ -121,10 +125,43 @@ export default {
     }
   }
 
-  &__fetching {
+  &__loader {
+    background: $accent;
+    height: 4px;
+    width: 55%;
+    position: absolute;
+    top: -4px;
+    left: 0;
+    display: none;
+    animation: loader 1s linear infinite alternate;
+
+    &--active {
+      display: block;
+    }
+  }
+
+  @keyframes loader {
+    from {
+      left: 0;
+    }
+
+    to {
+      left: 45%;
+    }
+  }
+
+  &__feedback {
     padding: 30px 12px;
     width: 100%;
     display: block;
+
+    &--fetching {
+      opacity: 0.5;
+    }
+
+    &--error {
+      color: red;
+    }
   }
 }
 </style>
